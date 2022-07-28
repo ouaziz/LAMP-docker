@@ -5,8 +5,8 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: php73fpm
+      dockerfile: php/Dockerfile
+    image: php80fpm
     container_name: app
     restart: unless-stopped
     tty: true
@@ -17,7 +17,7 @@ services:
       SERVICE_NAME: app
     working_dir: /var/www
     volumes:
-      - ./script:/var/www
+      - ./script/saas-starter-kit:/var/www
       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
       - app-network
@@ -31,7 +31,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./script:/var/www
+      - ./script/saas-starter-kit:/var/www
       - ./nginx/conf.d/:/etc/nginx/conf.d/
     networks:
       - app-network
@@ -45,8 +45,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: worksuite
+      MYSQL_DATABASE: saas-starter-kit
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: db_user
+      MYSQL_PASSWORD: Secret123
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
@@ -54,7 +56,21 @@ services:
       - ./mysql/my.cnf:/etc/mysql/my.cnf
     networks:
       - app-network
-
+  phpmyadmin:
+      image: phpmyadmin/phpmyadmin
+      container_name: phpmyadmin
+      tty: true
+      links:
+        - db
+      environment:
+        PMA_HOST: db
+        PMA_PORT: 3306
+        PMA_ARBITRARY: 1
+      restart: always
+      ports:
+        - 8081:80
+      networks:
+        - app-network
 #Docker Networks
 networks:
   app-network:
