@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: php/Dockerfile
     image: php80fpm
-    container_name: app
+    container_name: saas-starter-kit-app
     restart: unless-stopped
     tty: true
     ports:
@@ -25,7 +25,7 @@ services:
   #Nginx Service
   webserver:
     image: nginx:alpine
-    container_name: webserver
+    container_name: saas-starter-kit-webserver
     restart: unless-stopped
     tty: true
     ports:
@@ -39,7 +39,7 @@ services:
   #MySQL Service
   db:
     image: mysql:5.7.22
-    container_name: db
+    container_name: saas-starter-kit-db
     restart: unless-stopped
     tty: true
     ports:
@@ -58,7 +58,7 @@ services:
       - app-network
   phpmyadmin:
       image: phpmyadmin/phpmyadmin
-      container_name: phpmyadmin
+      container_name: saas-starter-kit-phpmyadmin
       tty: true
       links:
         - db
